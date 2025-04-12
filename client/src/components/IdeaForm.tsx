@@ -19,11 +19,8 @@ export default function IdeaForm({ onGeneratePlan, isLoading, setIsLoading }: Id
       return;
     }
     
-    // Check if the OpenAI API key is available
-    if (!import.meta.env.VITE_OPENAI_API_KEY) {
-      alert("OpenAI API key is missing. Please add your VITE_OPENAI_API_KEY to the .env file.");
-      return;
-    }
+    // We don't need to check for API key on client side anymore
+    // The API key is now securely stored on the server
     
     setIsLoading(true);
     
@@ -32,7 +29,7 @@ export default function IdeaForm({ onGeneratePlan, isLoading, setIsLoading }: Id
       onGeneratePlan({ content: result });
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to generate plan. Please check that your API key is valid and try again.");
+      alert("Failed to generate plan. There may be an issue with the server or OpenAI API connection. Please try again later.");
     } finally {
       setIsLoading(false);
     }
