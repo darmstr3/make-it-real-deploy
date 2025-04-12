@@ -74,11 +74,11 @@ Idea: ${idea}
 Tone: ${tone}
 `;
 
-      // Use the environment variable for OpenAI API key
-      const openaiApiKey = process.env.VITE_OPENAI_API_KEY;
+      // Use the environment variable for OpenAI API key (from server environment, not Vite)
+      const openaiApiKey = process.env.OPENAI_API_KEY;
       
       if (!openaiApiKey) {
-        console.error("OpenAI API key is missing. Please set VITE_OPENAI_API_KEY in your .env file.");
+        console.error("OpenAI API key is missing. Please set OPENAI_API_KEY in your .env file or server environment.");
         return res.status(500).json({ error: "Configuration error: API key is missing" });
       }
       

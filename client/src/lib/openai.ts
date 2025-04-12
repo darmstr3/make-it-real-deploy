@@ -1,9 +1,7 @@
 export async function generatePlan(idea: string, tone: string): Promise<string> {
   try {
-    // Check if API key is available in the environment
-    if (!import.meta.env.VITE_OPENAI_API_KEY) {
-      console.warn("OpenAI API key is missing. Please set VITE_OPENAI_API_KEY in your .env file.");
-    }
+    // We no longer need to check for API key on client side
+    // The API key is now securely stored on the server side
     
     const response = await fetch("/api/generate-plan", {
       method: "POST",
