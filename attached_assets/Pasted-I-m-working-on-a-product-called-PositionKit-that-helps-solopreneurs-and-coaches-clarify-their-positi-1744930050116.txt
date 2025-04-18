@@ -1,0 +1,46 @@
+I'm working on a product called PositionKit that helps solopreneurs and coaches clarify their positioning and messaging. I already have a working version of the app (like the one in the screenshot) that generates 3 positioning statements based on a short form.
+
+Now I want to rebuild the app with a much better user flow and final output.
+
+Please help me generate a new version using HTML/CSS/JS (or React if easier), where:
+
+1. The form is replaced with a step-by-step experience:
+   - Only **one question per screen**
+   - Each step should show:
+     - the question (e.g. “What do you do?”)
+     - a 1-sentence explanation of why it matters
+     - an example in light gray placeholder text
+
+2. The updated question list:
+   - What do you do? (Simple description of your work)
+   - What service or offer are you currently selling?
+   - What outcome or transformation do you deliver?
+   - What niche or audience do you serve?
+   - What are common pain points they experience daily?
+   - What do people misunderstand or undervalue about what you do?
+
+3. After they complete all steps, generate these outputs using OpenAI API (or simulate with placeholders):
+   - Website headline
+   - Instagram or LinkedIn bio
+   - CTA phrase with subheadline
+   - 1-paragraph summary of what they do and who they serve
+
+4. Show the results on screen with a clear heading and:
+   - 📥 Download Word doc button
+   - 📧 Option to enter their email and receive the results (use Resend or a placeholder function)
+
+5. Log their answers and output in Airtable via API (or simulate it with console logs for now). Include:
+   - timestamp
+   - each answer they gave
+   - whether they downloaded or requested via email
+
+6. Design notes:
+   - Keep it clean and modern like Apple or Notion
+   - Use subtle progress indicator or “Step X of 6”
+   - Let the final results screen feel like a deliverable
+   - Include "Regenerate" button to re-run the flow
+
+This is NOT just a quiz or copy-paste tool. It should feel like a smart tool that helps users think clearly and walk away with usable positioning assets. It should feel like an assistant, not a gimmick.
+
+Please generate the complete frontend and backend logic to run this inside Replit.
+

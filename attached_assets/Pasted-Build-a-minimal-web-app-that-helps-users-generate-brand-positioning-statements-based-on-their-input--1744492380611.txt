@@ -1,0 +1,70 @@
+Build a minimal web app that helps users generate brand positioning statements based on their input, with a built-in upsell paywall using Gumroad.
+
+Stack Preference:
+Use React (Vite) for the frontend, Express (Node.js) for the backend, and Tailwind CSS for styling — unless a faster, cleaner implementation is more suitable.
+
+Functional Requirements:
+1. Input Form (Frontend)
+Ask the user for the following fields:
+
+Target audience
+
+Transformation or outcome
+
+Service or offer
+
+Differentiator
+
+(Optional) Common objection
+
+On submit, send this data to an API endpoint (/api/generate)
+
+2. Backend Logic
+Use the OpenAI API (GPT-4 if available) via OPENAI_API_KEY from the .env file
+
+Prompt GPT with this system instruction:
+
+vbnet
+Copy
+Edit
+You are a brand strategist trained in frameworks like StoryBrand, April Dunford, and Hormozi. Based on the user's answers, generate 6 bold, original positioning statements that could be used as website headlines. Each statement should be punchy, specific, and free of generic buzzwords. Each one must stand alone and sound like a $500 line of website copy.
+Return those 6 outputs in JSON
+
+3. Output Display
+On the frontend, display:
+
+First 3 positioning statements clearly, with a "Copy" button
+
+Next 3 blurred, using a CSS blur filter and overlay
+
+Overlay should include a CTA like:
+
+“Unlock 9 premium positioning styles + advanced frameworks” With a button: “Unlock Full Access – $19”
+
+4. Gumroad Integration
+When the "Unlock" button is clicked:
+
+Redirect to a Gumroad checkout URL defined in .env as GUMROAD_PRODUCT_URL
+
+After purchase, Gumroad should redirect to the app with ?unlocked=true in the URL
+
+On the frontend:
+
+Detect ?unlocked=true or a localStorage flag
+
+If unlocked, remove the blur and show all 6 outputs
+
+5. Styling & UX
+Use Tailwind CSS or minimal custom styles
+
+Mobile-responsive
+
+Minimal, clean layout with strong UX
+
+6. Extra
+Include a .env file with OPENAI_API_KEY and GUMROAD_PRODUCT_URL
+
+Prevent any exposure of API keys on the frontend
+
+Optional: allow free users to regenerate once per session
+

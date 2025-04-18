@@ -1,16 +1,27 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import path from "path";
-import fs from "fs";
-import * as dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 
-// Load environment variables from .env file
-const envPath = path.resolve(process.cwd(), '.env');
-if (fs.existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-  log("Loaded environment variables from .env file");
+// Load environment variables at startup
+dotenv.config();
+
+// Check for essential environment variables for server
+// Important for deployment environments like Render
+if (!process.env.OPENAI_API_KEY) {
+  console.warn('WARNING: OPENAI_API_KEY environment variable is not set. API functionality that requires OpenAI will not work.');
 }
+
+// Log environment status without exposing actual values
+const envStatus = Object.keys(process.env)
+  .filter(key => key.includes('API_KEY') || key.includes('SECRET'))
+  .reduce((acc, key) => {
+    acc[key] = process.env[key] ? 'Set' : 'Not set';
+    return acc;
+  }, {} as Record<string, string>);
+
+console.log('Environment loaded in server/index.ts');
+console.log('Environment status:', envStatus);
 
 const app = express();
 app.use(express.json());

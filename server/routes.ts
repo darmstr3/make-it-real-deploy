@@ -1,122 +1,138 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import OpenAI from "openai";
+import { generatePositioningContent, PositioningOutput } from "./services/openai";
+// The server/index.ts file already handles environment variable loading,
+// so we don't need to call dotenv.config() again here.
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check endpoint
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
+  // Create OpenAI client with API key from environment
+  // Use process.env.OPENAI_API_KEY directly without intermediate variable
+  // This is more secure and compatible with deployment environments like Render
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("Error: OPENAI_API_KEY not set in environment variables");
+    // In production, you might want to throw an error here or set up fallback behavior
+  }
+  
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
   });
 
-  // OpenAI plan generation endpoint
-  app.post("/api/generate-plan", async (req, res) => {
+  // API endpoint to generate positioning content
+  app.post('/api/generate', async (req, res) => {
     try {
-      const { idea, tone } = req.body;
+      const { 
+        workDescription, 
+        service, 
+        transformation, 
+        audience, 
+        painPoints,
+        misunderstanding 
+      } = req.body;
       
-      if (!idea || !tone) {
-        return res.status(400).json({ error: "Idea and tone are required" });
-      }
-
-      const prompt = `
-You are a product strategist who turns rough startup ideas into clear launch plans.
-
-Given the idea below, return the following sections with exactly these headings:
-
-One-liner Pitch:
-(Provide a concise one-liner pitch for the idea)
-
-Landing Page Copy:
-Headline:
-(Provide an attention-grabbing headline)
-
-Subheadline:
-(Provide a complementary subheadline)
-
-3 Value Bullets:
-- (First benefit)
-- (Second benefit)
-- (Third benefit)
-
-CTA:
-(Provide a clear call to action)
-
-Three Cold DMs:
-Direct DM:
-(Provide a direct message template)
-
-Friendly DM:
-(Provide a friendly message template)
-
-High-status DM:
-(Provide a high-status message template)
-
-Task Plan:
-- Today:
-(List the tasks to do immediately)
-
-- Tomorrow:
-(List the tasks to do the next day)
-
-- This Week:
-(List the tasks to do within the week)
-
-Suggested Pricing Model:
-(Describe a pricing structure for the idea)
-
-Important: 
-- Do NOT use any asterisks (*) in your response
-- Use the EXACT headings as provided above
-- Present content in plain text without quotation marks
-- For the one-liner and content under headings, use normal text (not bullet points)
-- Only use bullet points (dashes) for the 3 value bullets and task plan items
-
-Idea: ${idea}
-Tone: ${tone}
-`;
-
-      // Use the environment variable for OpenAI API key (from server environment, not Vite)
-      const openaiApiKey = process.env.OPENAI_API_KEY;
-      
-      if (!openaiApiKey) {
-        console.error("OpenAI API key is missing. Please set OPENAI_API_KEY in your .env file or server environment.");
-        return res.status(500).json({ error: "Configuration error: API key is missing" });
+      // Validate required fields
+      if (!workDescription || !service || !transformation || !audience || !painPoints) {
+        return res.status(400).json({ 
+          message: "Missing required fields. Please complete all required questions." 
+        });
       }
       
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${openaiApiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful strategist that helps builders launch ideas.",
-            },
-            { role: "user", content: prompt },
-          ],
-          temperature: 0.7,
-          max_tokens: 1000,
-        }),
+      // Generate positioning content using OpenAI
+      const output = await generatePositioningContent(
+        openai,
+        workDescription,
+        service,
+        transformation,
+        audience,
+        painPoints,
+        misunderstanding
+      );
+      
+      // Log the request to console (simulate Airtable logging)
+      console.log('New positioning request:', {
+        timestamp: new Date().toISOString(),
+        workDescription,
+        service,
+        transformation,
+        audience,
+        painPoints,
+        misunderstanding
       });
-
-      const data = await response.json();
       
-      if (!response.ok) {
-        console.error("OpenAI API Error:", data);
-        return res.status(500).json({ error: data.error?.message || "Failed to generate plan" });
-      }
-
-      res.json({ content: data.choices?.[0]?.message?.content || "No response from AI." });
+      // Return generated content
+      res.json({ output });
     } catch (error) {
-      console.error("Server error:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error("Error generating positioning content:", error);
+      res.status(500).json({ 
+        message: "An error occurred while generating your positioning content. Please try again." 
+      });
+    }
+  });
+  
+  // API endpoint to log document download
+  app.post('/api/log-download', async (req, res) => {
+    try {
+      const { requestData } = req.body;
+      
+      // Log the download to console (simulate Airtable logging)
+      console.log('Document downloaded:', {
+        timestamp: new Date().toISOString(),
+        requestData,
+        action: 'download'
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error logging download:", error);
+      res.status(500).json({ message: "An error occurred while logging download." });
+    }
+  });
+  
+  // API endpoint to send email
+  app.post('/api/send-email', async (req, res) => {
+    try {
+      const { email, requestData, output } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email address is required." });
+      }
+      
+      // Log the email request to console
+      console.log('Email requested:', {
+        timestamp: new Date().toISOString(),
+        email,
+        action: 'email'
+      });
+      
+      // Import the email service (dynamically to avoid circular imports)
+      const { sendPositioningEmail } = await import('./services/email');
+      
+      // Send the email
+      const emailSent = await sendPositioningEmail({
+        to: email,
+        positioningOutput: output,
+        formData: requestData
+      });
+      
+      if (emailSent) {
+        res.json({ success: true });
+      } else {
+        // If email fails, provide a fallback message
+        res.status(500).json({ 
+          message: "Failed to send email. Please try downloading the document instead.",
+          fallback: true 
+        });
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+      res.status(500).json({ 
+        message: "An error occurred while sending email. Please try downloading the document instead.",
+        fallback: true
+      });
     }
   });
 
   const httpServer = createServer(app);
-
   return httpServer;
 }
