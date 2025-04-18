@@ -87,9 +87,19 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-100 mt-8 pt-6 flex justify-center">
-          <p className="text-gray-500 text-sm">
+        <div className="border-t border-gray-100 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center">
+          <p className="text-gray-500 text-sm mb-2 sm:mb-0">
             © {new Date().getFullYear()} PositionKit. All rights reserved.
+          </p>
+          <p className="text-gray-400 text-xs">
+            Created by <a 
+              href="https://www.linkedin.com/in/donovan-armstrong-06144b20b/" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-indigo-500 transition-colors"
+            >
+              Donovan Armstrong
+            </a>
           </p>
         </div>
       </div>
