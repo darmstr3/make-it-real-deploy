@@ -1,5 +1,7 @@
 # Deployment Guide for PositionKit
 
+> **Note:** For improved deployment instructions with fixes for build errors, please refer to the newer [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md) guide!
+
 This guide explains how to deploy PositionKit to [Render](https://render.com), ensuring that API keys and sensitive information are handled securely.
 
 ## Prerequisites

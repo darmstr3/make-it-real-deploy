@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: positionkit
+    env: node
+    buildCommand: ./render-build.sh
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
