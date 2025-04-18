@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/toaster";
-import NotFound from "./pages/not-found";
-import Home from "./pages/home";
-import PositioningGuide from "./pages/positioning-guide";
-import Examples from "./pages/examples";
-import PrivacyPolicy from "./pages/privacy-policy";
-import TermsOfService from "./pages/terms-of-service";
+import NotFound from "./pages/not-found.tsx";
+import Home from "./pages/home.tsx";
+import PositioningGuide from "./pages/positioning-guide.tsx";
+import Examples from "./pages/examples.tsx";
+import PrivacyPolicy from "./pages/privacy-policy.tsx";
+import TermsOfService from "./pages/terms-of-service.tsx";
 
 function Router() {
   const [location] = useLocation();
