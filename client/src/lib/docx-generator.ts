@@ -3,8 +3,8 @@
  * We use a well-formatted structure to make it easy to read.
  */
 
-import { PositioningOutput } from "@/components/positioning-results";
-import { FormData } from "@/components/step-form";
+import { PositioningOutput } from "../components/positioning-results";
+import { FormData } from "../components/step-form";
 
 interface DocxGeneratorOptions {
   positioningOutput: PositioningOutput;

@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import LandingPage from "@/components/landing-page";
-import StepForm, { FormData } from "@/components/step-form";
-import PositioningResults, { PositioningOutput } from "@/components/positioning-results";
-import LoadingState from "@/components/loading-state";
-import ToastNotification from "@/components/toast-notification";
-import Footer from "@/components/footer";
+import LandingPage from "../components/landing-page";
+import StepForm, { FormData } from "../components/step-form";
+import PositioningResults, { PositioningOutput } from "../components/positioning-results";
+import LoadingState from "../components/loading-state";
+import ToastNotification from "../components/toast-notification";
+import Footer from "../components/footer";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Card } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { apiRequest } from "../lib/queryClient";
+import { Card } from "../components/ui/card";
+import { Alert, AlertDescription } from "../components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
-import { generateDocx, downloadDocx } from "@/lib/docx-generator";
+import { generateDocx, downloadDocx } from "../lib/docx-generator";
 
 // Structure for regeneration tracking
 interface RegenerationLimit {
